@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal start_game
+signal mode_hud_toggle;
 
 func show_message(text):
 	$Message.text = text
@@ -20,6 +21,7 @@ func show_game_over():
 	yield(get_tree().create_timer(1), "timeout")
 	$StartButton.show()
 	$MadeBy.show()
+	emit_signal("mode_hud_toggle");
 
 func update_score(score):
 	$ScoreLabel.text = str(score)
@@ -32,3 +34,4 @@ func _on_StartButton_pressed():
 	$StartButton.hide()
 	$MadeBy.hide()
 	emit_signal("start_game")
+	emit_signal("mode_hud_toggle");

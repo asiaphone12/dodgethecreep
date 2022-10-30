@@ -1,10 +1,17 @@
 extends Area2D
+
 signal hit
 signal dragsignal
+signal shoot(direction);
 
 export var speed = 400
+
 var screen_size
 var dragging = false
+var player_mode: int = 0;
+
+func change_player_mode(state: int) -> void:
+	player_mode = state;
 
 func _ready():
 	screen_size = get_viewport_rect().size
@@ -13,6 +20,7 @@ func _ready():
 
 func _process(delta):
 	var velocity = Vector2.ZERO
+	var mousepos = get_viewport().get_mouse_position();
 	if Input.is_action_pressed("move_right"):
 		velocity.x += 1
 	if Input.is_action_pressed("move_left"):
@@ -20,10 +28,12 @@ func _process(delta):
 	if Input.is_action_pressed("move_down"):
 		velocity.y += 1
 	if Input.is_action_pressed("move_up"):
-		velocity.y -= 1	 
+		velocity.y -= 1
 	if Input.is_action_pressed("click") or dragging:
-		var mousepos = get_viewport().get_mouse_position()
-		velocity = -(self.position - Vector2(mousepos.x, mousepos.y)).normalized();
+		var mouse_self_range: float = mousepos.length() - self.position.length();
+		velocity = (mousepos - self.position).normalized();
+		if(mouse_self_range < 5.0 && mouse_self_range > -5.0):
+			velocity = Vector2.ZERO;
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
 		$AnimatedSprite.play()
@@ -40,9 +50,13 @@ func _process(delta):
 	elif velocity.y != 0:
 		$AnimatedSprite.animation = 'up'
 		$AnimatedSprite.flip_v = velocity.y > 0
+	
+	if(player_mode == UsedEnum.STATE_SHOOT && Input.is_action_just_pressed("shoot")):
+		emit_signal("shoot", (mousepos - self.position).normalized());
+
 
 func _set_drag_pc():
-	dragging =!dragging
+	dragging = !dragging
 
 func _on_Player_body_entered(body):
 	hide()

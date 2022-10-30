@@ -1,9 +1,13 @@
 extends Node
 
 export (PackedScene) var mob_scene
+export (PackedScene) var laser_beam_scene: PackedScene;
 var score
 
+
 func _ready():
+	$ModeHUD.connect("playable_state", $Player, "change_player_mode");
+	$HUD.connect("mode_hud_toggle", $ModeHUD, "toggle_visibility");
 	randomize()
 
 func game_over():
@@ -40,3 +44,13 @@ func _on_MobTimer_timeout():
 	mob.linear_velocity = velocity.rotated(direction)
 	mob.rotation = direction;
 	add_child(mob)
+
+
+func _on_Player_shoot(direction: Vector2) -> void:
+	if($Player.visible == false):
+		return;
+	var laser_beam: Area2D = laser_beam_scene.instance();
+	laser_beam.position = $Player.position + direction * 64;
+	self.add_child(laser_beam);
+	laser_beam.shoot_trajectory(direction);
+	
