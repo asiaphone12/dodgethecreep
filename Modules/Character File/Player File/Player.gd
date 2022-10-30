@@ -23,7 +23,7 @@ func _process(delta):
 		velocity.y -= 1	 
 	if Input.is_action_pressed("click") or dragging:
 		var mousepos = get_viewport().get_mouse_position()
-		position = Vector2(mousepos.x, mousepos.y)
+		velocity = -(self.position - Vector2(mousepos.x, mousepos.y)).normalized();
 	if velocity.length() > 0:
 		velocity = velocity.normalized() * speed
 		$AnimatedSprite.play()
