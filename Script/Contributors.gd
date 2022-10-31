@@ -10,3 +10,4 @@ in ready function.
 
 func _ready() -> void:
 	print("hello from celestialaxis");
+	print("hello from sultanBeruang")
