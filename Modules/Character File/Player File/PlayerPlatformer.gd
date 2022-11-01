@@ -37,7 +37,12 @@ func play_animation():
 		$PlatformerSprite.play("walk")
 	if(direction.x > 0):
 		$PlatformerSprite.flip_h = false;
-	else:
+
+#	else:
+#		$PlatformerSprite.flip_h = true;
+	elif(direction.x < 0):
 		$PlatformerSprite.flip_h = true;
+
+		
 	if(not self.is_on_floor()):
 		$PlatformerSprite.play("jump");
